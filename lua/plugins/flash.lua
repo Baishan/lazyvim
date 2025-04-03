@@ -10,7 +10,8 @@ local function setupCustomHighlightGroup()
 end
 
 return {
-  "folke/flash.nvim",
+  "folke/flash.nvim",  
+  ---@type Flash.Config
   opts = {
     rainbow = {
       enabled = true,
@@ -25,15 +26,28 @@ return {
         label = "FlashLabel",
       },
     },
+    modes = {
+      char = {
+        enabled = true,
+        multi_line = false,
+        highlight = {matches = false},
+        autohide = true
+      },
+      search = {
+        enabled = false,
+      }
+
+    },
   },
-  config = function()
+  config = function(_, opts)
     setupCustomHighlightGroup()
+    require("flash").setup(opts)
   end,
   keys = function(_, opts)
     return {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
       { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      -- { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     }
   end
